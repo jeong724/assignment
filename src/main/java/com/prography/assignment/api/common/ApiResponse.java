@@ -1,6 +1,7 @@
 package com.prography.assignment.api.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.prography.assignment.common.code.ErrorCode;
 import com.prography.assignment.common.code.SuccessCode;
 import lombok.*;
 
