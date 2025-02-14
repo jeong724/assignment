@@ -1,10 +1,7 @@
 package com.prography.assignment.api.common;
 
-package com.example.pingpong.api.common;
-
-import com.example.pingpong.common.code.ErrorCode;
-import com.example.pingpong.common.code.SuccessCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.prography.assignment.common.code.SuccessCode;
 import lombok.*;
 
 @Getter
