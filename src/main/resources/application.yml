@@ -3,18 +3,17 @@ server:
 
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/pingpong
-    password:
-    driver-class-name: org.h2.Driver #h2 데이터베이스 이용
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:prography
     username: sa
+    password:
+
 
   jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create #자동으로 테이블 만들어줌
-    properties:
-      hibernate:
-        # show_sql: true 이건 system out을 통해 출력하기 때문에 이건 쓰면 안됨 그대신 밑에서 로그 씀
-        format_sql: true
+      ddl-auto: create
 
 logging:
   level:
