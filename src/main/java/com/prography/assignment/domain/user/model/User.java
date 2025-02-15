@@ -27,8 +27,7 @@ public class User extends BaseTimeEntity {
     private UserStatus status;
 
     @Builder
-    private User(Integer id, String name, Integer fakerId, String email, UserStatus status) {
-        this.id = fakerId;
+    private User(String name, Integer fakerId, String email, UserStatus status) {
         this.name = name;
         this.fakerId = fakerId;
         this.email = email;
@@ -37,7 +36,6 @@ public class User extends BaseTimeEntity {
 
     public static User create(String name, Integer fakerId, String email, UserStatus status) {
         return User.builder()
-                .id(fakerId)
                 .name(name)
                 .fakerId(fakerId)
                 .email(email)

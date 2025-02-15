@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Page<User> findAllByOrderByIdAsc(Pageable pageable);
 
     @Modifying
-    @Query(value = "TRUNCATE TABLE users", nativeQuery = true)
+    @Query(value = "truncate table users", nativeQuery = true)
     void truncate();
 
 }

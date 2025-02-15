@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface RoomRepository extends JpaRepository<Room, Integer> {
 
     @Modifying
-    @Query(value = "TRUNCATE TABLE room", nativeQuery = true)
+    @Query(value = "truncate table room", nativeQuery = true)
     void truncate();
 }

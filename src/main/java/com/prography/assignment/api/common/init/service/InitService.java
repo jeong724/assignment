@@ -5,6 +5,7 @@ import com.prography.assignment.api.common.init.service.response.FakerGetParseRe
 import com.prography.assignment.api.user.UserUpdater;
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.user.model.UserStatus;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,16 +23,14 @@ public class InitService {
     private final UserDataProvider provider;
     private final UserUpdater userUpdater;
 
-
     @Transactional
     public void init(final InitPostCommand command) {
-        initializer.init(); //db 초기화
+        initializer.initDatabase(); //db 초기화
 
         List<User> userList = provider.fetchUsers(command).stream()
-                .sorted(Comparator.comparing(FakerGetParseResponse::fakerId)) // fakerId 기준 정렬
+                .sorted(Comparator.comparing(FakerGetParseResponse::fakerId))
                 .map(response -> User.create(response.name(), response.fakerId(), response.email(), determineStatus(response.fakerId())))
                 .collect(Collectors.toList());
-
 
         userUpdater.save(userList);
     }
