@@ -22,7 +22,7 @@ public class DatabaseTableInitializerImpl implements Initializer {
 
     @Override
     @Transactional
-    public void init(int seed, int quantity) {
+    public void init() {
         try {
             entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE;").executeUpdate();
 

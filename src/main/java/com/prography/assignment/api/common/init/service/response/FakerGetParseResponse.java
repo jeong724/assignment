@@ -2,7 +2,7 @@ package com.prography.assignment.api.common.init.service.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record FakerGetResponse(
+public record FakerGetParseResponse(
 
         @JsonProperty(value = "id")
         Integer fakerId,

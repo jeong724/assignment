@@ -2,10 +2,7 @@ package com.prography.assignment.domain.user.model;
 
 import com.prography.assignment.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
@@ -29,6 +26,23 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
+    @Builder
+    private User(Integer id, String name, Integer fakerId, String email, UserStatus status) {
+        this.id = fakerId;
+        this.name = name;
+        this.fakerId = fakerId;
+        this.email = email;
+        this.status = status;
+    }
 
+    public static User create(String name, Integer fakerId, String email, UserStatus status) {
+        return User.builder()
+                .id(fakerId)
+                .name(name)
+                .fakerId(fakerId)
+                .email(email)
+                .status(status)
+                .build();
+    }
 
 }
