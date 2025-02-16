@@ -11,7 +11,7 @@ public class RoomUpdater {
 
     private final RoomRepository roomRepository;
 
-    protected void createRoom(Room room) {
+    protected void save(Room room) {
         roomRepository.save(room);
     }
 }

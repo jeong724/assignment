@@ -2,10 +2,7 @@ package com.prography.assignment.domain.room.model;
 
 import com.prography.assignment.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity
@@ -26,4 +23,18 @@ public class Room extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
 
+    @Builder
+    private Room(Integer id, String title, RoomType roomType, RoomStatus status) {
+        this.id = id;
+        this.title = title;
+        this.roomType = roomType;
+        this.status = status;
+    }
+    public static Room create(String title, RoomType roomType, RoomStatus status) {
+        return Room.builder()
+                .title(title)
+                .roomType(roomType)
+                .status(status)
+                .build();
+    }
 }
