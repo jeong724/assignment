@@ -1,6 +1,7 @@
 package com.prography.assignment.domain.room.model;
 
 import com.prography.assignment.domain.common.BaseTimeEntity;
+import com.prography.assignment.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,10 @@ public class Room extends BaseTimeEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
+
+    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User host;
 
     @Builder
     private Room(Integer id, String title, RoomType roomType, RoomStatus status) {
