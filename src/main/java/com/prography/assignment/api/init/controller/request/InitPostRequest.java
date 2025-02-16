@@ -1,4 +1,4 @@
-package com.prography.assignment.api.common.init.controller.request;
+package com.prography.assignment.api.init.controller.request;
 
 import jakarta.validation.constraints.NotBlank;
 

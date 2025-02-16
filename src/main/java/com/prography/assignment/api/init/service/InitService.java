@@ -1,16 +1,14 @@
-package com.prography.assignment.api.common.init.service;
+package com.prography.assignment.api.init.service;
 
-import com.prography.assignment.api.common.init.service.command.InitPostCommand;
-import com.prography.assignment.api.common.init.service.response.FakerGetParseResponse;
-import com.prography.assignment.api.user.UserUpdater;
+import com.prography.assignment.api.init.service.command.InitPostCommand;
+import com.prography.assignment.api.init.service.response.FakerGetParseResponse;
+import com.prography.assignment.api.user.service.UserUpdater;
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.user.model.UserStatus;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Member;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;

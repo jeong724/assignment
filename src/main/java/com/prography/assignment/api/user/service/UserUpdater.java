@@ -1,4 +1,4 @@
-package com.prography.assignment.api.user;
+package com.prography.assignment.api.user.service;
 
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.user.repository.UserRepository;

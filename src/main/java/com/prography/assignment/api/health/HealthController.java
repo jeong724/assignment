@@ -1,4 +1,4 @@
-package com.prography.assignment.api.common.health;
+package com.prography.assignment.api.health;
 
 import com.prography.assignment.api.common.ApiResponse;
 import com.prography.assignment.common.code.CommonSuccessCode;

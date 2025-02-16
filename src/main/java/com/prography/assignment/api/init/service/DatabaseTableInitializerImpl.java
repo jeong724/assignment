@@ -1,10 +1,9 @@
-package com.prography.assignment.api.common.init.service;
+package com.prography.assignment.api.init.service;
 
 import com.prography.assignment.domain.room.repository.RoomRepository;
 import com.prography.assignment.domain.user.repository.UserRepository;
 import com.prography.assignment.domain.userroom.repository.UserRoomRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

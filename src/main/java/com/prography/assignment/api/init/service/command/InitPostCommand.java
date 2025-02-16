@@ -1,6 +1,6 @@
-package com.prography.assignment.api.common.init.service.command;
+package com.prography.assignment.api.init.service.command;
 
-import com.prography.assignment.api.common.init.controller.request.InitPostRequest;
+import com.prography.assignment.api.init.controller.request.InitPostRequest;
 
 public record InitPostCommand(
         int seed,

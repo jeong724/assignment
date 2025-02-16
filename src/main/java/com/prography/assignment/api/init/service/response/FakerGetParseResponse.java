@@ -1,4 +1,4 @@
-package com.prography.assignment.api.common.init.service.response;
+package com.prography.assignment.api.init.service.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
