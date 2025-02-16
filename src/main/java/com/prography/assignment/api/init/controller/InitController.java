@@ -1,11 +1,10 @@
-package com.prography.assignment.api.common.init.controller;
+package com.prography.assignment.api.init.controller;
 
 import com.prography.assignment.api.common.ApiResponse;
-import com.prography.assignment.api.common.init.controller.request.InitPostRequest;
-import com.prography.assignment.api.common.init.service.InitService;
-import com.prography.assignment.api.common.init.service.command.InitPostCommand;
+import com.prography.assignment.api.init.controller.request.InitPostRequest;
+import com.prography.assignment.api.init.service.InitService;
+import com.prography.assignment.api.init.service.command.InitPostCommand;
 import com.prography.assignment.common.code.CommonSuccessCode;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

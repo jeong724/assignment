@@ -1,8 +1,8 @@
-package com.prography.assignment.api.common.init.service;
+package com.prography.assignment.api.init.service;
 
-import com.prography.assignment.api.common.init.service.command.InitPostCommand;
-import com.prography.assignment.api.common.init.service.response.FakerGetDataResponse;
-import com.prography.assignment.api.common.init.service.response.FakerGetParseResponse;
+import com.prography.assignment.api.init.service.command.InitPostCommand;
+import com.prography.assignment.api.init.service.response.FakerGetDataResponse;
+import com.prography.assignment.api.init.service.response.FakerGetParseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
