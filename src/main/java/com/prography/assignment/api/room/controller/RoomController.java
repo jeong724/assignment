@@ -30,6 +30,8 @@ public class RoomController {
             @RequestParam final int size,
             @RequestParam final int page
     ){
+        RoomGetResponse response = roomService.getAllRooms(size, page);
 
+        return ApiResponse.onSuccess(CommonSuccessCode.OK, response);
     }
 }

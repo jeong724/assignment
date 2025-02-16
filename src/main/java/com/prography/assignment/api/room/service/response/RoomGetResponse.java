@@ -4,6 +4,7 @@ import com.prography.assignment.domain.room.model.Room;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public record RoomGetResponse(
         int totalElements,
@@ -12,9 +13,11 @@ public record RoomGetResponse(
 ) {
     public static RoomGetResponse of(final Page<Room> rooms){
         return new RoomGetResponse(
-                rooms.getTotalElements(),
+                (int)rooms.getTotalElements(),
                 rooms.getTotalPages(),
-                rooms.
-        )
+                rooms.getContent().stream()
+                        .map(RoomResponse::of)
+                        .collect(Collectors.toList())
+        );
     }
 }

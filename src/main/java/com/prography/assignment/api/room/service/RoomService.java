@@ -48,6 +48,7 @@ public class RoomService {
     public RoomGetResponse getAllRooms(int size, int page){
         Page<Room> rooms = roomFinder.findRooms(size, page);
 
+        return RoomGetResponse.of(rooms);
     }
 
     private boolean validateCreateRoom(final User host) {
