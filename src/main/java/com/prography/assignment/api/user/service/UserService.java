@@ -13,7 +13,7 @@ public class UserService {
 
     private final UserFinder userFinder;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public UserGetResponse getUsers(int size, int page){
         Page<User> users= userFinder.findAll(size, page);
 
