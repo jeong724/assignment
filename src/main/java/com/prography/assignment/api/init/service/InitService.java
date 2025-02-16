@@ -2,7 +2,7 @@ package com.prography.assignment.api.init.service;
 
 import com.prography.assignment.api.init.service.command.InitPostCommand;
 import com.prography.assignment.api.init.service.response.FakerGetParseResponse;
-import com.prography.assignment.api.user.UserUpdater;
+import com.prography.assignment.api.user.service.UserUpdater;
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.user.model.UserStatus;
 import lombok.RequiredArgsConstructor;

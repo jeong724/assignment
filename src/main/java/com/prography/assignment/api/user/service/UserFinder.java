@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -20,5 +21,9 @@ public class UserFinder {
     public Page<User> findAll(int size, int page) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
         return userRepository.findAllByOrderByIdAsc(pageable);
+    }
+
+    public Optional<User> findById(int id) {
+        return userRepository.findById(id);
     }
 }
