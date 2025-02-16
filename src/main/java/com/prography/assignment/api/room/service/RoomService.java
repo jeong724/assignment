@@ -38,7 +38,7 @@ public class RoomService {
             throw new BadRequestException(BusinessErrorCode.BAD_REQUEST);
 
         //룸 생성
-        Room room = roomUpdater.save(Room.create(command.title(), RoomType.valueOf(command.roomType()), RoomStatus.WAIT));
+        Room room = roomUpdater.save(Room.create(command.title(), RoomType.valueOf(command.roomType()), RoomStatus.WAIT, host));
 
         //host 저장
         userRoomUpdater.save(UserRoom.create(Team.RED, host, room));

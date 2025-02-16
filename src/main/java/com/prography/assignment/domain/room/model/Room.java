@@ -29,17 +29,19 @@ public class Room extends BaseTimeEntity {
     private User host;
 
     @Builder
-    private Room(Integer id, String title, RoomType roomType, RoomStatus status) {
+    private Room(Integer id, String title, RoomType roomType, RoomStatus status, User host) {
         this.id = id;
         this.title = title;
         this.roomType = roomType;
         this.status = status;
+        this.host = host;
     }
-    public static Room create(String title, RoomType roomType, RoomStatus status) {
+    public static Room create(String title, RoomType roomType, RoomStatus status, User host) {
         return Room.builder()
                 .title(title)
                 .roomType(roomType)
                 .status(status)
+                .host(host)
                 .build();
     }
 }
