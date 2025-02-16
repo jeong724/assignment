@@ -2,6 +2,7 @@ package com.prography.assignment.api.room.service;
 
 import com.prography.assignment.api.room.service.command.RoomPostCommand;
 import com.prography.assignment.api.user.service.UserFinder;
+import com.prography.assignment.api.userroom.service.UserRoomUpdater;
 import com.prography.assignment.api.userroom.service.UserRoomValidator;
 import com.prography.assignment.common.code.BusinessErrorCode;
 import com.prography.assignment.common.exception.BadRequestException;
@@ -10,6 +11,8 @@ import com.prography.assignment.domain.room.model.RoomStatus;
 import com.prography.assignment.domain.room.model.RoomType;
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.user.model.UserStatus;
+import com.prography.assignment.domain.userroom.model.Team;
+import com.prography.assignment.domain.userroom.model.UserRoom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,7 @@ public class RoomService {
     private final UserFinder userFinder;
     private final UserRoomValidator userRoomValidator;
     private final RoomUpdater roomUpdater;
+    private final UserRoomUpdater userRoomUpdater;
 
     @Transactional
     public void createRoom(final RoomPostCommand command) {
@@ -30,7 +34,11 @@ public class RoomService {
         if(!validateCreateRoom(host))
             throw new BadRequestException(BusinessErrorCode.BAD_REQUEST);
 
-        roomUpdater.save(Room.create(command.title(), RoomType.valueOf(command.roomType()), RoomStatus.WAIT));
+        //룸 생성
+        Room room = roomUpdater.save(Room.create(command.title(), RoomType.valueOf(command.roomType()), RoomStatus.WAIT));
+
+        //host 저장
+        userRoomUpdater.save(UserRoom.create(Team.RED, host, room));
     }
 
     private boolean validateCreateRoom(final User host) {

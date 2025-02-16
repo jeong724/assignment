@@ -13,4 +13,6 @@ public interface UserRoomRepository extends JpaRepository<UserRoom, Integer> {
     void truncate();
 
     boolean existsByUser(User user);
+
+
 }
