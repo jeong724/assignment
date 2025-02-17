@@ -13,5 +13,7 @@ public class UserRoomUpdater {
 
     public void save(UserRoom userRoom) {
         userRoomRepository.save(userRoom);
+
     }
+
 }

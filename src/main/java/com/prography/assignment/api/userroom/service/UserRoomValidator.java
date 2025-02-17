@@ -1,5 +1,7 @@
 package com.prography.assignment.api.userroom.service;
 
+import com.prography.assignment.domain.room.model.Room;
+import com.prography.assignment.domain.room.model.RoomType;
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.userroom.repository.UserRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,4 +17,7 @@ public class UserRoomValidator {
         return userRoomRepository.existsByUser(user);
     }
 
+    public int countUser(Room room){
+        return userRoomRepository.countByRoom(room);
+    }
 }
