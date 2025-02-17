@@ -74,17 +74,17 @@ public class RoomService {
             throw new BadRequestException(BusinessErrorCode.BAD_REQUEST);
         }
 
-        userRoomUpdater.save();
+        userRoomUpdater.save(UserRoom.create(availableTeam(room),user, room));
     }
 
     private boolean validateCreateRoom(final User host) {
 
-        // 활성 상태아니라면 룸 생성 x
+        //1. 활성 상태아니라면 룸 생성 x
         if (!(host.getStatus() == UserStatus.ACTIVE)) {
             return false;
         }
 
-        //유저가 다른 룸에 존재하면 룸 생성x
+        //2. 유저가 다른 룸에 존재하면 룸 생성x
         if (userRoomValidator.userRoomExists(host)) {
             return false;
         }
@@ -94,28 +94,37 @@ public class RoomService {
 
     private boolean validateAttend(final Room room, User user){
 
-        //룸이 대기상태가 아니라면
+        //1. 룸이 대기상태가 아니라면
         if (room.getStatus() != RoomStatus.WAIT){
             return false;
         }
 
-        // 활성 상태아니라면 룸 참가 x
+        //2. 활성 상태아니라면 룸 참가 x
         if (!(user.getStatus() == UserStatus.ACTIVE)) {
             return false;
         }
 
-        //유저가 다른 룸에 존재하면 룸 참가x
+        //3. 유저가 다른 룸에 존재하면 룸 참가x
         if (userRoomValidator.userRoomExists(user)) {
             return false;
         }
 
-        //참가하려는 방의 인원이 찼을때
+        //4. 참가하려는 방의 인원이 찼을때
         int currentAttendance = userRoomValidator.countUser(room);
         if (currentAttendance >= room.getCapacity()){
             return false;
         }
 
         return true;
+    }
+
+    private Team availableTeam(Room room){
+        int redAttendance = userRoomValidator.countRedTeam(room);
+
+        if (redAttendance >= room.getCapacity()/2){
+            return Team.BLUE;
+        }
+        return Team.RED;
     }
 
 
