@@ -2,6 +2,7 @@ package com.prography.assignment.api.room.service;
 
 import com.prography.assignment.api.room.service.command.RoomPostCommand;
 import com.prography.assignment.api.room.service.response.RoomGetResponse;
+import com.prography.assignment.api.room.service.response.RoomWithDateResponse;
 import com.prography.assignment.api.user.service.UserFinder;
 import com.prography.assignment.api.userroom.service.UserRoomUpdater;
 import com.prography.assignment.api.userroom.service.UserRoomValidator;
@@ -49,6 +50,14 @@ public class RoomService {
         Page<Room> rooms = roomFinder.findRooms(size, page);
 
         return RoomGetResponse.of(rooms);
+    }
+
+    @Transactional(readOnly = true)
+    public RoomWithDateResponse getRoom(int roomId){
+        Room room = roomFinder.findRoom(roomId)
+                .orElseThrow(() -> new BadRequestException(BusinessErrorCode.BAD_REQUEST));
+
+        return RoomWithDateResponse.of(room);
     }
 
     private boolean validateCreateRoom(final User host) {

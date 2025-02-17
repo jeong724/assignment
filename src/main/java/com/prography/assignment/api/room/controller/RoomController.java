@@ -5,6 +5,7 @@ import com.prography.assignment.api.room.controller.request.RoomPostRequest;
 import com.prography.assignment.api.room.service.RoomService;
 import com.prography.assignment.api.room.service.command.RoomPostCommand;
 import com.prography.assignment.api.room.service.response.RoomGetResponse;
+import com.prography.assignment.api.room.service.response.RoomWithDateResponse;
 import com.prography.assignment.common.code.CommonSuccessCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,15 @@ public class RoomController {
             @RequestParam final int page
     ){
         RoomGetResponse response = roomService.getAllRooms(size, page);
+
+        return ApiResponse.onSuccess(CommonSuccessCode.OK, response);
+    }
+
+    @GetMapping("/{roomId}")
+    public ApiResponse<RoomWithDateResponse> getRoom(
+            @PathVariable("roomId") final Integer roomId
+    ){
+        RoomWithDateResponse response = roomService.getRoom(roomId);
 
         return ApiResponse.onSuccess(CommonSuccessCode.OK, response);
     }
