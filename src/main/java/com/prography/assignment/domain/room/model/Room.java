@@ -44,4 +44,12 @@ public class Room extends BaseTimeEntity {
                 .host(host)
                 .build();
     }
+
+    public int getCapacity() {
+        return roomType.getCapacity();
+    }
+
+    public void changeRoomStatus(RoomStatus status){
+        this.status = status;
+    }
 }
