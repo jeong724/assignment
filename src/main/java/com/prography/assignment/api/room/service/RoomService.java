@@ -1,6 +1,8 @@
 package com.prography.assignment.api.room.service;
 
 import com.prography.assignment.api.room.service.command.RoomPostCommand;
+import com.prography.assignment.api.room.service.response.RoomGetResponse;
+import com.prography.assignment.api.room.service.response.RoomWithDateResponse;
 import com.prography.assignment.api.user.service.UserFinder;
 import com.prography.assignment.api.userroom.service.UserRoomUpdater;
 import com.prography.assignment.api.userroom.service.UserRoomValidator;
@@ -14,6 +16,7 @@ import com.prography.assignment.domain.user.model.UserStatus;
 import com.prography.assignment.domain.userroom.model.Team;
 import com.prography.assignment.domain.userroom.model.UserRoom;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,7 @@ public class RoomService {
     private final UserRoomValidator userRoomValidator;
     private final RoomUpdater roomUpdater;
     private final UserRoomUpdater userRoomUpdater;
+    private final RoomFinder roomFinder;
 
     @Transactional
     public void createRoom(final RoomPostCommand command) {
@@ -35,10 +39,25 @@ public class RoomService {
             throw new BadRequestException(BusinessErrorCode.BAD_REQUEST);
 
         //룸 생성
-        Room room = roomUpdater.save(Room.create(command.title(), RoomType.valueOf(command.roomType()), RoomStatus.WAIT));
+        Room room = roomUpdater.save(Room.create(command.title(), RoomType.valueOf(command.roomType()), RoomStatus.WAIT, host));
 
         //host 저장
         userRoomUpdater.save(UserRoom.create(Team.RED, host, room));
+    }
+
+    @Transactional(readOnly = true)
+    public RoomGetResponse getAllRooms(int size, int page){
+        Page<Room> rooms = roomFinder.findRooms(size, page);
+
+        return RoomGetResponse.of(rooms);
+    }
+
+    @Transactional(readOnly = true)
+    public RoomWithDateResponse getRoom(int roomId){
+        Room room = roomFinder.findRoom(roomId)
+                .orElseThrow(() -> new BadRequestException(BusinessErrorCode.BAD_REQUEST));
+
+        return RoomWithDateResponse.of(room);
     }
 
     private boolean validateCreateRoom(final User host) {
