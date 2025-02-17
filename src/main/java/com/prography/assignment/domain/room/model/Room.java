@@ -48,4 +48,8 @@ public class Room extends BaseTimeEntity {
     public int getCapacity() {
         return roomType.getCapacity();
     }
+
+    public void changeRoomStatus(RoomStatus status){
+        this.status = status;
+    }
 }

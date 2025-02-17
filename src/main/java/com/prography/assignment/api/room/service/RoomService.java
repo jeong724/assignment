@@ -1,10 +1,12 @@
 package com.prography.assignment.api.room.service;
 
 import com.prography.assignment.api.room.service.command.RoomAttendPostCommand;
+import com.prography.assignment.api.room.service.command.RoomOutPostCommand;
 import com.prography.assignment.api.room.service.command.RoomPostCommand;
 import com.prography.assignment.api.room.service.response.RoomGetResponse;
 import com.prography.assignment.api.room.service.response.RoomWithDateResponse;
 import com.prography.assignment.api.user.service.UserFinder;
+import com.prography.assignment.api.userroom.service.UserRoomDeleter;
 import com.prography.assignment.api.userroom.service.UserRoomUpdater;
 import com.prography.assignment.api.userroom.service.UserRoomValidator;
 import com.prography.assignment.common.code.BusinessErrorCode;
@@ -30,6 +32,7 @@ public class RoomService {
     private final RoomUpdater roomUpdater;
     private final UserRoomUpdater userRoomUpdater;
     private final RoomFinder roomFinder;
+    private final UserRoomDeleter userRoomDeleter;
 
     @Transactional
     public void createRoom(final RoomPostCommand command) {
@@ -40,10 +43,8 @@ public class RoomService {
             throw new BadRequestException(BusinessErrorCode.BAD_REQUEST);
         }
 
-        //룸 생성
         Room room = roomUpdater.save(Room.create(command.title(), RoomType.valueOf(command.roomType()), RoomStatus.WAIT, host));
 
-        //host 저장
         userRoomUpdater.save(UserRoom.create(Team.RED, host, room));
     }
 
@@ -77,6 +78,25 @@ public class RoomService {
         userRoomUpdater.save(UserRoom.create(availableTeam(room),user, room));
     }
 
+    @Transactional
+    public void outRoom(final RoomOutPostCommand command){
+        User user = userFinder.findById(command.userId())
+                .orElseThrow(()-> new BadRequestException(BusinessErrorCode.BAD_REQUEST));
+
+        Room room = roomFinder.findRoom(command.roomId())
+                .orElseThrow(()-> new BadRequestException(BusinessErrorCode.BAD_REQUEST));
+
+        if (!validateOut(user, room)){
+            throw new BadRequestException(BusinessErrorCode.BAD_REQUEST);
+        }
+
+        userRoomDeleter.deleteUser(user);
+
+        isHostOut(user, room);
+
+
+    }
+
     private boolean validateCreateRoom(final User host) {
 
         //1. 활성 상태아니라면 룸 생성 x
@@ -92,7 +112,7 @@ public class RoomService {
         return true;
     }
 
-    private boolean validateAttend(final Room room, User user){
+    private boolean validateAttend(final Room room, final User user){
 
         //1. 룸이 대기상태가 아니라면
         if (room.getStatus() != RoomStatus.WAIT){
@@ -118,7 +138,7 @@ public class RoomService {
         return true;
     }
 
-    private Team availableTeam(Room room){
+    private Team availableTeam(final Room room){
         int redAttendance = userRoomValidator.countRedTeam(room);
 
         if (redAttendance >= room.getCapacity()/2){
@@ -127,5 +147,27 @@ public class RoomService {
         return Team.RED;
     }
 
+    private boolean validateOut(final User user, final Room room){
+
+        //1. 유저가 룸에 없을떄
+        if (!userRoomValidator.isUserInRoom(user,room)) {
+            return false;
+        }
+
+        //2.방이 PROGRESS 또는 FINISH 일떄
+        if (room.getStatus() != RoomStatus.WAIT){
+            return false;
+        }
+
+        return true;
+    }
+
+    //호스트가 나갈때
+    private void isHostOut(User user, Room room){
+        if (user.equals(room.getHost())){
+            userRoomDeleter.deleteUserRoom(room);
+            room.changeRoomStatus(RoomStatus.FINISH);
+        }
+    }
 
 }

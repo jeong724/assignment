@@ -26,4 +26,8 @@ public class UserRoomValidator {
         return userRoomRepository.countByRoomAndTeam(room, Team.RED);
     }
 
+    public boolean isUserInRoom(User user, Room room){
+        return userRoomRepository.existsUserRoomByUserAndRoom(user, room);
+    }
+
 }
