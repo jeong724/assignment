@@ -3,6 +3,7 @@ package com.prography.assignment.api.room.service;
 import com.prography.assignment.api.room.service.command.RoomAttendPostCommand;
 import com.prography.assignment.api.room.service.command.RoomOutPostCommand;
 import com.prography.assignment.api.room.service.command.RoomPostCommand;
+import com.prography.assignment.api.room.service.command.RoomStartPostCommand;
 import com.prography.assignment.api.room.service.response.RoomGetResponse;
 import com.prography.assignment.api.room.service.response.RoomWithDateResponse;
 import com.prography.assignment.api.user.service.UserFinder;
@@ -14,14 +15,21 @@ import com.prography.assignment.common.exception.BadRequestException;
 import com.prography.assignment.domain.room.model.Room;
 import com.prography.assignment.domain.room.model.RoomStatus;
 import com.prography.assignment.domain.room.model.RoomType;
+import com.prography.assignment.domain.room.repository.RoomRepository;
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.user.model.UserStatus;
 import com.prography.assignment.domain.userroom.model.Team;
 import com.prography.assignment.domain.userroom.model.UserRoom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +41,7 @@ public class RoomService {
     private final UserRoomUpdater userRoomUpdater;
     private final RoomFinder roomFinder;
     private final UserRoomDeleter userRoomDeleter;
+    private final RoomTimeOutScheduler roomTimeOutScheduler;
 
     @Transactional
     public void createRoom(final RoomPostCommand command) {
@@ -93,8 +102,23 @@ public class RoomService {
         userRoomDeleter.deleteUser(user);
 
         isHostOut(user, room);
+    }
 
+    @Transactional
+    public void startRoom(RoomStartPostCommand command){
+        User user = userFinder.findById(command.userId())
+                .orElseThrow(()-> new BadRequestException(BusinessErrorCode.BAD_REQUEST));
 
+        Room room = roomFinder.findRoom(command.roomId())
+                .orElseThrow(()-> new BadRequestException(BusinessErrorCode.BAD_REQUEST));
+
+        if (!validateStartGame(user, room)){
+            throw new BadRequestException(BusinessErrorCode.BAD_REQUEST);
+        }
+
+        room.changeRoomStatus(RoomStatus.PROGRESS);
+
+        roomTimeOutScheduler.finish(room.getId());
     }
 
     private boolean validateCreateRoom(final User host) {
@@ -168,6 +192,27 @@ public class RoomService {
             userRoomDeleter.deleteUserRoom(room);
             room.changeRoomStatus(RoomStatus.FINISH);
         }
+    }
+
+    private boolean validateStartGame(User user, Room room){
+
+        //유저가 호스트인지
+        if (!user.equals(room.getHost())) {
+            return false;
+        }
+
+        //방 인원이 꽉 찼을때
+        int currentAttendance = userRoomValidator.countUser(room);
+        if (currentAttendance != room.getCapacity()){
+            return false;
+        }
+
+        //룸 상태가 wait일때
+        if (room.getStatus() != RoomStatus.WAIT){
+            return false;
+        }
+
+        return true;
     }
 
 }
