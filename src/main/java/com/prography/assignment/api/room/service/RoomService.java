@@ -41,8 +41,7 @@ public class RoomService {
     private final UserRoomUpdater userRoomUpdater;
     private final RoomFinder roomFinder;
     private final UserRoomDeleter userRoomDeleter;
-    private final RoomFinisher roomFinisher;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final RoomTimeOutScheduler roomTimeOutScheduler;
 
     @Transactional
     public void createRoom(final RoomPostCommand command) {
@@ -119,7 +118,7 @@ public class RoomService {
 
         room.changeRoomStatus(RoomStatus.PROGRESS);
 
-        finish(room.getId());
+        roomTimeOutScheduler.finish(room.getId());
     }
 
     private boolean validateCreateRoom(final User host) {
@@ -214,13 +213,6 @@ public class RoomService {
         }
 
         return true;
-    }
-
-    @Async
-    public void finish(int roomId) {
-
-        // 60초 후 finishRoom 실행 예약
-        scheduler.schedule(() -> roomFinisher.finishRoom(roomId), 60, TimeUnit.SECONDS);
     }
 
 }
