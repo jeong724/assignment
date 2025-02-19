@@ -15,14 +15,21 @@ import com.prography.assignment.common.exception.BadRequestException;
 import com.prography.assignment.domain.room.model.Room;
 import com.prography.assignment.domain.room.model.RoomStatus;
 import com.prography.assignment.domain.room.model.RoomType;
+import com.prography.assignment.domain.room.repository.RoomRepository;
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.user.model.UserStatus;
 import com.prography.assignment.domain.userroom.model.Team;
 import com.prography.assignment.domain.userroom.model.UserRoom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +41,8 @@ public class RoomService {
     private final UserRoomUpdater userRoomUpdater;
     private final RoomFinder roomFinder;
     private final UserRoomDeleter userRoomDeleter;
+    private final RoomFinisher roomFinisher;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Transactional
     public void createRoom(final RoomPostCommand command) {
@@ -110,8 +119,7 @@ public class RoomService {
 
         room.changeRoomStatus(RoomStatus.PROGRESS);
 
-
-
+        finish(room.getId());
     }
 
     private boolean validateCreateRoom(final User host) {
@@ -190,7 +198,7 @@ public class RoomService {
     private boolean validateStartGame(User user, Room room){
 
         //유저가 호스트인지
-        if (!roomFinder.isHost(room, user)){
+        if (!user.equals(room.getHost())) {
             return false;
         }
 
@@ -206,6 +214,13 @@ public class RoomService {
         }
 
         return true;
+    }
+
+    @Async
+    public void finish(int roomId) {
+
+        // 60초 후 finishRoom 실행 예약
+        scheduler.schedule(() -> roomFinisher.finishRoom(roomId), 60, TimeUnit.SECONDS);
     }
 
 }

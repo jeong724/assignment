@@ -29,8 +29,4 @@ public class RoomFinder {
     public Optional<Room> findRoom(int roomId){
         return roomRepository.findById(roomId);
     }
-
-    public boolean isHost(Room room, User user){
-        return roomRepository.existsRoomByHost(room, user);
-    }
 }
