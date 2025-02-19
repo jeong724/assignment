@@ -16,4 +16,5 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
 
     Page<Room> findAllByOrderByIdAsc(Pageable pageable);
 
+    boolean existsRoomByHost(Room room, User host);
 }

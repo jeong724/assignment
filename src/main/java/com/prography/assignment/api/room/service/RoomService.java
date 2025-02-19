@@ -3,6 +3,7 @@ package com.prography.assignment.api.room.service;
 import com.prography.assignment.api.room.service.command.RoomAttendPostCommand;
 import com.prography.assignment.api.room.service.command.RoomOutPostCommand;
 import com.prography.assignment.api.room.service.command.RoomPostCommand;
+import com.prography.assignment.api.room.service.command.RoomStartPostCommand;
 import com.prography.assignment.api.room.service.response.RoomGetResponse;
 import com.prography.assignment.api.room.service.response.RoomWithDateResponse;
 import com.prography.assignment.api.user.service.UserFinder;
@@ -93,6 +94,22 @@ public class RoomService {
         userRoomDeleter.deleteUser(user);
 
         isHostOut(user, room);
+    }
+
+    @Transactional
+    public void startRoom(RoomStartPostCommand command){
+        User user = userFinder.findById(command.userId())
+                .orElseThrow(()-> new BadRequestException(BusinessErrorCode.BAD_REQUEST));
+
+        Room room = roomFinder.findRoom(command.roomId())
+                .orElseThrow(()-> new BadRequestException(BusinessErrorCode.BAD_REQUEST));
+
+        if (!validateStartGame(user, room)){
+            throw new BadRequestException(BusinessErrorCode.BAD_REQUEST);
+        }
+
+        room.changeRoomStatus(RoomStatus.PROGRESS);
+
 
 
     }
@@ -168,6 +185,27 @@ public class RoomService {
             userRoomDeleter.deleteUserRoom(room);
             room.changeRoomStatus(RoomStatus.FINISH);
         }
+    }
+
+    private boolean validateStartGame(User user, Room room){
+
+        //유저가 호스트인지
+        if (!roomFinder.isHost(room, user)){
+            return false;
+        }
+
+        //방 인원이 꽉 찼을때
+        int currentAttendance = userRoomValidator.countUser(room);
+        if (currentAttendance != room.getCapacity()){
+            return false;
+        }
+
+        //룸 상태가 wait일때
+        if (room.getStatus() != RoomStatus.WAIT){
+            return false;
+        }
+
+        return true;
     }
 
 }

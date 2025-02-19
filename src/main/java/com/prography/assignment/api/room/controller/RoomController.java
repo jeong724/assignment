@@ -4,6 +4,7 @@ import com.prography.assignment.api.common.ApiResponse;
 import com.prography.assignment.api.room.controller.request.RoomAttendPostRequest;
 import com.prography.assignment.api.room.controller.request.RoomOutPostRequest;
 import com.prography.assignment.api.room.controller.request.RoomPostRequest;
+import com.prography.assignment.api.room.controller.request.RoomStartPostRequest;
 import com.prography.assignment.api.room.service.RoomService;
 import com.prography.assignment.api.room.service.command.RoomAttendPostCommand;
 import com.prography.assignment.api.room.service.command.RoomOutPostCommand;
@@ -66,6 +67,14 @@ public class RoomController {
     ){
         roomService.outRoom(RoomOutPostCommand.of(roomId, request));
 
+        return ApiResponse.onSuccess(CommonSuccessCode.OK);
+    }
+
+    @PostMapping("/start/{roomId}")
+    public ApiResponse<Void> startGame(
+            @PathVariable("roomId") final Integer roomId,
+            @RequestBody RoomStartPostRequest request
+    ){
         return ApiResponse.onSuccess(CommonSuccessCode.OK);
     }
 }
