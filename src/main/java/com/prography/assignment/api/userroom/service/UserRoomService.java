@@ -49,7 +49,7 @@ public class UserRoomService {
 
         // 반대편 팀이 가득 찼을때
         int oppositeTeamAttendance = userRoomValidator.countTeamMembers(room, roomMember.getOppositeTeam());
-        if (oppositeTeamAttendance == room.getCapacity()){
+        if (oppositeTeamAttendance == room.getCapacity()/2){
             return false;
         }
 
