@@ -30,4 +30,7 @@ public class UserRoomValidator {
         return userRoomRepository.existsUserRoomByUserAndRoom(user, room);
     }
 
+    public int countTeamMembers(Room room, Team team){
+        return userRoomRepository.countByRoomAndTeam(room, team);
+    }
 }

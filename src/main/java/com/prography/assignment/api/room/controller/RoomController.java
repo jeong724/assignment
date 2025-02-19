@@ -74,7 +74,7 @@ public class RoomController {
     @PutMapping("/start/{roomId}")
     public ApiResponse<Void> startGame(
             @PathVariable("roomId") final Integer roomId,
-            @RequestBody RoomStartPostRequest request
+            @RequestBody final RoomStartPostRequest request
     ){
         roomService.startRoom(RoomStartPostCommand.of(request, roomId));
         return ApiResponse.onSuccess(CommonSuccessCode.OK);

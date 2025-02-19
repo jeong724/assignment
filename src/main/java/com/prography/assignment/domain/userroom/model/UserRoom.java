@@ -39,4 +39,12 @@ public class UserRoom {
                 .build();
 
     }
+
+    public Team getOppositeTeam() {
+        return (this.team == Team.RED) ? Team.BLUE : Team.RED;
+    }
+
+    public void changeTeam(UserRoom roomMember){
+        this.team = roomMember.getOppositeTeam();
+    }
 }
