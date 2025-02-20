@@ -4,11 +4,10 @@ import com.prography.assignment.api.room.service.RoomFinder;
 import com.prography.assignment.api.user.service.UserFinder;
 import com.prography.assignment.api.userroom.service.command.ChangeTeamCommand;
 import com.prography.assignment.common.code.BusinessErrorCode;
-import com.prography.assignment.common.exception.BadRequestException;
+import com.prography.assignment.common.exception.SpecificException;
 import com.prography.assignment.domain.room.model.Room;
 import com.prography.assignment.domain.room.model.RoomStatus;
 import com.prography.assignment.domain.user.model.User;
-import com.prography.assignment.domain.userroom.model.Team;
 import com.prography.assignment.domain.userroom.model.UserRoom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,19 +26,19 @@ public class UserRoomService {
     public void changeTeam(ChangeTeamCommand command){
 
         User user = userFinder.findById(command.userId())
-                .orElseThrow(()-> new BadRequestException(BusinessErrorCode.BAD_REQUEST));
+                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
 
         Room room = roomFinder.findRoom(command.roomId())
-                .orElseThrow(()-> new BadRequestException(BusinessErrorCode.BAD_REQUEST));
+                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
 
         if (!userRoomValidator.isUserInRoom(user, room)){
-            throw new BadRequestException(BusinessErrorCode.BAD_REQUEST);
+            throw new SpecificException(BusinessErrorCode.BAD_REQUEST);
         }
 
         UserRoom roomMember = userRoomFinder.findUserRoom(user, room);
 
         if (!validateChangeTeam(roomMember, room)){
-            throw new BadRequestException(BusinessErrorCode.BAD_REQUEST);
+            throw new SpecificException(BusinessErrorCode.BAD_REQUEST);
         }
 
         roomMember.changeTeam(roomMember);
