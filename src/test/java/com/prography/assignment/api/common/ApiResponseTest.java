@@ -4,7 +4,6 @@ import com.prography.assignment.common.code.BusinessErrorCode;
 import com.prography.assignment.common.code.CommonSuccessCode;
 import com.prography.assignment.common.code.ErrorCode;
 import com.prography.assignment.common.code.SuccessCode;
-import com.prography.assignment.common.exception.BadRequestException;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
