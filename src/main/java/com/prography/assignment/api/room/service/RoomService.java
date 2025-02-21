@@ -37,7 +37,7 @@ public class RoomService {
     private final RoomTimeOutScheduler roomTimeOutScheduler;
 
     @Transactional
-    public void createRoom(final RoomPostCommand command) {
+    public int createRoom(final RoomPostCommand command) {
         User host = userFinder.findById(command.userId())
                 .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
 
@@ -48,6 +48,8 @@ public class RoomService {
         Room room = roomUpdater.save(Room.create(command.title(), RoomType.valueOf(command.roomType()), RoomStatus.WAIT, host));
 
         userRoomUpdater.save(UserRoom.create(Team.RED, host, room));
+
+        return room.getId();
     }
 
     @Transactional(readOnly = true)

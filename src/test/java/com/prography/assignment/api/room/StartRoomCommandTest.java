@@ -1,21 +1,19 @@
 package com.prography.assignment.api.room;
 
-import com.prography.assignment.api.room.controller.request.RoomAttendPostRequest;
-import com.prography.assignment.api.room.controller.request.RoomOutPostRequest;
 import com.prography.assignment.api.room.controller.request.RoomPostRequest;
+import com.prography.assignment.api.room.controller.request.RoomStartPostRequest;
 import com.prography.assignment.api.room.service.RoomService;
 import com.prography.assignment.api.room.service.command.RoomAttendPostCommand;
-import com.prography.assignment.api.room.service.command.RoomOutPostCommand;
 import com.prography.assignment.api.room.service.command.RoomPostCommand;
+import com.prography.assignment.api.room.service.command.RoomStartPostCommand;
 import com.prography.assignment.api.user.UserSteps;
 import com.prography.assignment.domain.room.model.Room;
 import com.prography.assignment.domain.room.model.RoomStatus;
 import com.prography.assignment.domain.room.repository.RoomRepository;
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.user.repository.UserRepository;
-import com.prography.assignment.domain.userroom.model.Team;
-import com.prography.assignment.domain.userroom.model.UserRoom;
 import com.prography.assignment.domain.userroom.repository.UserRoomRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +21,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.lang.Thread.sleep;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class OutRoomCommandTest {
+public class StartRoomCommandTest {
 
     @Autowired
     RoomService roomService;
@@ -41,7 +41,7 @@ public class OutRoomCommandTest {
     @Autowired
     UserRoomRepository userRoomRepository;
 
-    private User savedActiveUser;
+    private User host;
 
     private Room savedRoom;
 
@@ -49,29 +49,44 @@ public class OutRoomCommandTest {
     void setUp(){
 
         User userActive = UserSteps.유저_STATUS_ACTIVE_객체_생성();
-        savedActiveUser = userRepository.save(userActive);
+        User userActive2 = UserSteps.유저_STATUS_ACTIVE_객체_생성2();
 
-        RoomPostRequest request = RoomSteps.룸_생성_요청(savedActiveUser);
+        host = userRepository.save(userActive);
+        User user2 = userRepository.save(userActive2);
+
+        RoomPostRequest request = RoomSteps.룸_생성_요청(host);
         int roomId = roomService.createRoom(RoomPostCommand.of(request));
         savedRoom = roomRepository.findById(roomId).orElseThrow();
+
+        roomService.attendRoom(RoomAttendPostCommand.of(RoomSteps.룸_참가_요청(user2), savedRoom.getId()));
+    }
+
+    @AfterEach
+    void tearDown() {
+        userRoomRepository.deleteAll();
+        roomRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
-    @Transactional
-    void 룸에서_나간다(){
+    void 게임을_시작한다()  throws InterruptedException{
 
         //given
-        RoomOutPostRequest request = RoomSteps.룸_나가기_요청(savedActiveUser);
-        RoomOutPostCommand command = RoomOutPostCommand.of(savedRoom.getId(), request);
+        RoomStartPostRequest request = RoomSteps.게임_시작_요청(host);
+        RoomStartPostCommand command = RoomStartPostCommand.of(request, savedRoom.getId());
 
         //when
-        roomService.outRoom(command);
+        roomService.startRoom(command);
 
         //then
-        assertThat(userRoomRepository.findByUserAndRoom(savedActiveUser,savedRoom)).isNull();
+        Room progressdRoom = roomRepository.findById(savedRoom.getId()).orElseThrow();
+        assertThat(progressdRoom.getStatus()).isEqualTo(RoomStatus.PROGRESS);
 
-        Room room = roomRepository.findById(savedRoom.getId()).orElseThrow();
-        assertThat(room.getStatus()).isEqualTo(RoomStatus.FINISH);
+        Thread.sleep(70000);
 
+        Room finishedRoom = roomRepository.findById(savedRoom.getId()).orElseThrow();
+        assertThat(finishedRoom.getStatus()).isEqualTo(RoomStatus.FINISH);
     }
+
+
 }

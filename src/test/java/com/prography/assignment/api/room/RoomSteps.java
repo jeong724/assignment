@@ -3,6 +3,7 @@ package com.prography.assignment.api.room;
 import com.prography.assignment.api.room.controller.request.RoomAttendPostRequest;
 import com.prography.assignment.api.room.controller.request.RoomOutPostRequest;
 import com.prography.assignment.api.room.controller.request.RoomPostRequest;
+import com.prography.assignment.api.room.controller.request.RoomStartPostRequest;
 import com.prography.assignment.api.room.service.command.RoomPostCommand;
 import com.prography.assignment.domain.room.model.Room;
 import com.prography.assignment.domain.room.model.RoomStatus;
@@ -35,5 +36,9 @@ public class RoomSteps {
 
     public static RoomOutPostRequest 룸_나가기_요청(User user){
         return new RoomOutPostRequest(user.getId());
+    }
+
+    public static RoomStartPostRequest 게임_시작_요청(User host){
+        return new RoomStartPostRequest(host.getId());
     }
 }

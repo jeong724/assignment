@@ -49,10 +49,10 @@ public class CreateRoomCommandTest {
         RoomPostRequest requestWait = RoomSteps.룸_생성_요청(savedActiveUser);
 
         //when
-        roomService.createRoom(RoomPostCommand.of(requestWait));
+        int roomId = roomService.createRoom(RoomPostCommand.of(requestWait));
 
         //then
-        Room savedRoom = roomRepository.findAll().get(0);
+        Room savedRoom = roomRepository.findById(roomId).orElseThrow();
         assertThat(savedRoom.getHost()).isEqualTo(savedActiveUser);
         assertThat(savedRoom.getStatus()).isEqualTo(RoomStatus.WAIT);
     }
