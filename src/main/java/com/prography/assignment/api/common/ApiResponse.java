@@ -28,8 +28,6 @@ public class ApiResponse<T> {
 
     //실패한 경우
     public static <T> ApiResponse<T> onFailure(ErrorCode errorCode){
-        return new ApiResponse<>(errorCode.getHttpStatus().value(), errorCode.getMessage());
+        return new ApiResponse<>(errorCode.getCode(), errorCode.getMessage());
     }
 }
-
-

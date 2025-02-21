@@ -21,7 +21,7 @@ public class RoomSteps {
     }
 
     public static Room 룸_객체_생성(User host){
-        return Room.create("testRoom", RoomType.DOUBLE, RoomStatus.WAIT, host);
+        return Room.create("testRoom", RoomType.SINGLE, RoomStatus.WAIT, host);
     }
 
     public static List<Room> 룸_목록_생성(int count, List<User> host) {

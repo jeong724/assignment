@@ -1,11 +1,25 @@
+server:
+  port: 8080
+
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:prography
+    url: jdbc:h2:tcp://localhost/~/pingpong
     username: sa
     password:
+
+
   jpa:
     open-in-view: false
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+logging:
+  level:
+    org.hibernate.sql: debug #hibernate가 생성하는 sql이 다 보임
+    org.hibernate.type: trace # 쿼리 파라미터 로깅

@@ -7,6 +7,7 @@ import com.prography.assignment.api.room.service.command.RoomStartPostCommand;
 import com.prography.assignment.api.room.service.response.RoomGetResponse;
 import com.prography.assignment.api.room.service.response.RoomWithDateResponse;
 import com.prography.assignment.api.user.service.UserFinder;
+import com.prography.assignment.api.user.service.UserResolver;
 import com.prography.assignment.api.userroom.service.UserRoomDeleter;
 import com.prography.assignment.api.userroom.service.UserRoomUpdater;
 import com.prography.assignment.api.userroom.service.UserRoomValidator;
@@ -35,11 +36,12 @@ public class RoomService {
     private final RoomFinder roomFinder;
     private final UserRoomDeleter userRoomDeleter;
     private final RoomTimeOutScheduler roomTimeOutScheduler;
+    private final RoomResolver roomResolver;
+    private final UserResolver userResolver;
 
     @Transactional
     public int createRoom(final RoomPostCommand command) {
-        User host = userFinder.findById(command.userId())
-                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
+        User host = userResolver.resolveUser(command.userId());
 
         if(!validateCreateRoom(host)) {
             throw new SpecificException(BusinessErrorCode.BAD_REQUEST);
@@ -61,19 +63,15 @@ public class RoomService {
 
     @Transactional(readOnly = true)
     public RoomWithDateResponse getRoom(final int roomId){
-        Room room = roomFinder.findRoom(roomId)
-                .orElseThrow(() -> new SpecificException(BusinessErrorCode.BAD_REQUEST));
+        Room room = roomResolver.resolveRoom(roomId);
 
         return RoomWithDateResponse.of(room);
     }
 
     @Transactional
     public void attendRoom(final RoomAttendPostCommand command){
-        User user = userFinder.findById(command.userId())
-                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
-
-        Room room = roomFinder.findRoom(command.roomId())
-                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
+        User user = userResolver.resolveUser(command.userId());
+        Room room = roomResolver.resolveRoom(command.roomId());
 
         if (!validateAttend(room, user)){
             throw new SpecificException(BusinessErrorCode.BAD_REQUEST);
@@ -84,11 +82,8 @@ public class RoomService {
 
     @Transactional
     public void outRoom(final RoomOutPostCommand command){
-        User user = userFinder.findById(command.userId())
-                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
-
-        Room room = roomFinder.findRoom(command.roomId())
-                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
+        User user = userResolver.resolveUser(command.userId());
+        Room room = roomResolver.resolveRoom(command.roomId());
 
         if (!validateOut(user, room)){
             throw new SpecificException(BusinessErrorCode.BAD_REQUEST);
@@ -101,11 +96,8 @@ public class RoomService {
 
     @Transactional
     public void startRoom(RoomStartPostCommand command){
-        User user = userFinder.findById(command.userId())
-                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
-
-        Room room = roomFinder.findRoom(command.roomId())
-                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
+        User user = userResolver.resolveUser(command.userId());
+        Room room = roomResolver.resolveRoom(command.roomId());
 
         if (!validateStartGame(user, room)){
             throw new SpecificException(BusinessErrorCode.BAD_REQUEST);

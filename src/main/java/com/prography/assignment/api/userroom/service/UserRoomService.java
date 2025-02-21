@@ -1,7 +1,9 @@
 package com.prography.assignment.api.userroom.service;
 
 import com.prography.assignment.api.room.service.RoomFinder;
+import com.prography.assignment.api.room.service.RoomResolver;
 import com.prography.assignment.api.user.service.UserFinder;
+import com.prography.assignment.api.user.service.UserResolver;
 import com.prography.assignment.api.userroom.service.command.ChangeTeamCommand;
 import com.prography.assignment.common.code.BusinessErrorCode;
 import com.prography.assignment.common.exception.SpecificException;
@@ -21,15 +23,14 @@ public class UserRoomService {
     private final RoomFinder roomFinder;
     private final UserRoomValidator userRoomValidator;
     private final UserRoomFinder userRoomFinder;
+    private final RoomResolver roomResolver;
+    private final UserResolver userResolver;
 
     @Transactional
     public void changeTeam(ChangeTeamCommand command){
 
-        User user = userFinder.findById(command.userId())
-                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
-
-        Room room = roomFinder.findRoom(command.roomId())
-                .orElseThrow(()-> new SpecificException(BusinessErrorCode.BAD_REQUEST));
+        User user = userResolver.resolveUser(command.userId());
+        Room room = roomResolver.resolveRoom(command.roomId());
 
         if (!userRoomValidator.isUserInRoom(user, room)){
             throw new SpecificException(BusinessErrorCode.BAD_REQUEST);
