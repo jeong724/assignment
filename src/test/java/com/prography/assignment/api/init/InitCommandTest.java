@@ -5,6 +5,7 @@ import com.prography.assignment.api.init.service.command.InitPostCommand;
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.user.model.UserStatus;
 import com.prography.assignment.domain.user.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
