@@ -19,4 +19,22 @@ public class UserSteps {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public static User 유저_STATUS_WAIT_객체_생성(){
+        return User.builder()
+                .email("tester1@gmail.com")
+                .name("tester1")
+                .fakerId(1)
+                .status(UserStatus.WAIT)
+                .build();
+    }
+
+    public static User 유저_STATUS_ACTIVE_객체_생성(){
+        return User.builder()
+                .email("tester2@gmail.com")
+                .name("tester2")
+                .fakerId(2)
+                .status(UserStatus.ACTIVE)
+                .build();
+    }
 }
