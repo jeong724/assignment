@@ -66,7 +66,7 @@ public class ChangeTeamCommandTest {
 
         //given
         ChangeTeamRequest request = UserRoomSteps.팀_변경_요청(savedActiveUser);
-        ChangeTeamCommand command = ChangeTeamCommand.of(request, savedActiveUser.getId());
+        ChangeTeamCommand command = ChangeTeamCommand.of(request, savedUserRoom.getRoom().getId());
 
         //when
         userRoomService.changeTeam(command);

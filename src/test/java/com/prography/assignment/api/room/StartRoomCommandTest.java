@@ -43,6 +43,8 @@ public class StartRoomCommandTest {
 
     private Room savedRoom;
 
+    private int roomId;
+
     @BeforeEach
     void setUp(){
 
@@ -56,7 +58,7 @@ public class StartRoomCommandTest {
         int roomId = roomService.createRoom(RoomPostCommand.of(request));
         savedRoom = roomRepository.findById(roomId).orElseThrow();
 
-        roomService.attendRoom(RoomAttendPostCommand.of(RoomSteps.룸_참가_요청(user2), savedRoom.getId()));
+        roomService.attendRoom(RoomAttendPostCommand.of(RoomSteps.룸_참가_요청(user2), roomId));
     }
 
     @AfterEach

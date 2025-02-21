@@ -16,7 +16,7 @@ public class UserSteps {
     }
 
     public static User 유저_STATUS_ACTIVE_객체_생성2(){
-        return User.create("tester2", 2, "tester1@gmail.com", UserStatus.ACTIVE);
+        return User.create("tester2", 2, "tester2@gmail.com", UserStatus.ACTIVE);
     }
 
     public static User 유저_STATUS_ACTIVE_객체_생성(){

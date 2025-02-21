@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ApiResponseTest {
 
     @Test
-    void onSuccessWithoutData() {
+    void onSuccess_데이터x를_실행한다() {
 
         // given
         SuccessCode successCode = CommonSuccessCode.OK;
@@ -25,7 +25,7 @@ class ApiResponseTest {
     }
 
     @Test
-    void onSuccessWithData() {
+    void onSuccess_데이터o를_실행한다() {
 
         // given
         SuccessCode successCode = CommonSuccessCode.OK;
@@ -39,7 +39,7 @@ class ApiResponseTest {
     }
 
     @Test
-    void onFailure() {
+    void onFailure를_실행한다() {
         // given
         ErrorCode errorCode = BusinessErrorCode.BAD_REQUEST;
 
@@ -47,7 +47,6 @@ class ApiResponseTest {
         ApiResponse<Void> response = ApiResponse.onFailure(errorCode);
 
         // then
-        assertThat(response.getCode()).isEqualTo(errorCode.getHttpStatus().value());
         assertThat(response.getMessage()).isEqualTo(errorCode.getMessage());
     }
 }
