@@ -1,13 +1,16 @@
 package com.prography.assignment.api.room;
 
+import com.prography.assignment.api.room.controller.request.RoomAttendPostRequest;
 import com.prography.assignment.api.room.service.RoomService;
-import com.prography.assignment.api.room.service.response.RoomGetResponse;
+import com.prography.assignment.api.room.service.command.RoomAttendPostCommand;
 import com.prography.assignment.api.user.UserSteps;
 import com.prography.assignment.domain.room.model.Room;
-import com.prography.assignment.domain.room.model.RoomStatus;
 import com.prography.assignment.domain.room.repository.RoomRepository;
 import com.prography.assignment.domain.user.model.User;
 import com.prography.assignment.domain.user.repository.UserRepository;
+import com.prography.assignment.domain.userroom.model.Team;
+import com.prography.assignment.domain.userroom.model.UserRoom;
+import com.prography.assignment.domain.userroom.repository.UserRoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,26 +18,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class RoomRetrieveCommandTest {
-
-    @Autowired
-    RoomRepository roomRepository;
+public class AttendanceRoomCommandTest {
 
     @Autowired
     RoomService roomService;
 
     @Autowired
+    RoomRepository roomRepository;
+
+    @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserRoomRepository userRoomRepository;
+
     private User savedActiveUser;
-    private List<User> savedUsers;
+
+    private Room savedRoom;
 
     @BeforeEach
     void setUp(){
@@ -42,40 +46,25 @@ public class RoomRetrieveCommandTest {
         User userActive2 = UserSteps.유저_STATUS_ACTIVE_객체_생성2();
 
         savedActiveUser = userRepository.save(userActive);
-        userRepository.save(userActive2);
+        User savedActiveUser2 = userRepository.save(userActive2);
 
-        savedUsers = userRepository.findAll();
+        Room room = RoomSteps.룸_객체_생성(savedActiveUser2);
+        savedRoom = roomRepository.save(room);
     }
 
     @Test
     @Transactional
-    void 룸을_전체_조회한다(){
+    void 룸에_참가한다(){
 
         //given
-        List<Room> savedRoomList = RoomSteps.룸_목록_생성(2, savedUsers);
-        roomRepository.saveAll(savedRoomList);
+        RoomAttendPostRequest request = RoomSteps.룸_참가_요청(savedActiveUser);
+        RoomAttendPostCommand command = RoomAttendPostCommand.of(request, savedRoom.getId());
 
         //when
-        RoomGetResponse retrievedRooms = roomService.getAllRooms(2, 0);
+        roomService.attendRoom(command);
 
         //then
-        assertThat(retrievedRooms.roomList()).hasSize(2);
-        assertThat(retrievedRooms.totalPages()).isEqualTo(1);
-    }
-
-    @Test
-    @Transactional
-    void 룸을_상세_조회한다(){
-
-        //given
-        Room room = RoomSteps.룸_객체_생성(savedActiveUser);
-        Room savedRoom = roomRepository.save(room);
-
-        //when
-        roomService.getRoom(savedRoom.getId());
-
-        //then
-        assertThat(savedRoom.getStatus()).isEqualTo(RoomStatus.WAIT);
-        assertThat(savedRoom.getHost()).isEqualTo(savedActiveUser);
+        UserRoom userRoom = userRoomRepository.findByUserAndRoom(savedActiveUser, savedRoom);
+        assertThat(userRoom.getTeam()).isEqualTo(Team.RED);
     }
 }

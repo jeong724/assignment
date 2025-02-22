@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public record UserGetResponse(
         int totalElements,
         int totalPages,
-        List<UserResponse> users
+        List<UserResponse> userList
 ) {
 	public static UserGetResponse of(final Page<User> users){
 		return new UserGetResponse(

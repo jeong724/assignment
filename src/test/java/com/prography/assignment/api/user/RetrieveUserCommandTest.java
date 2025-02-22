@@ -35,7 +35,7 @@ public class RetrieveUserCommandTest {
         UserGetResponse retrievedUsers = userService.getUsers(5, 1);
 
         // then
-        assertThat(retrievedUsers.users()).hasSize(5);
+        assertThat(retrievedUsers.userList()).hasSize(5);
         assertThat(retrievedUsers.totalElements()).isEqualTo(10);
     }
 }
